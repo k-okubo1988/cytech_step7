@@ -1,0 +1,162 @@
+/* 共通部分 */
+.container{
+    margin: 20px;
+}
+
+.product__title{
+    margin-bottom: 20px;
+}
+
+.product__container{
+    border: 1px solid #333;
+    padding: 20px;
+}
+
+.product__row {
+    margin: 15px;
+    display: flex;
+}
+
+.btn--orange{
+    border-style: none;
+    background-color: orange;
+    border-radius: 3px;
+}
+
+.btn--blue{
+    background-color: skyblue;
+    border-radius: 3px;
+}
+
+.btn--red{
+    background-color: red;
+    border-radius: 3px;
+    color: #fff;
+}
+
+/* 商品一覧画面 */
+.product__container--index{
+    padding: 0;
+}
+
+table{
+    width: 100%;
+}
+
+.form__row{
+    margin-bottom: 20px;
+}
+
+.form__row input{
+    display: inline-block;
+}
+
+.form__row select{
+    display: inline-block;
+    margin-left: 20px;
+    width: 200px;
+    padding-block: 3px;
+}
+
+.form__row button{
+    display: inline-block;
+    margin-left: 20px;
+    background-color: #fff;
+    padding: 3px 20px;
+    border-radius: 3px;
+}
+
+.product__lists th{
+    padding: 10px;
+    text-align: center;
+}
+
+.product__lists th a{
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    padding-inline: 3px;
+    padding-block: 5px;
+}
+
+th{
+    background-color: #fff;
+}
+
+th:nth-child(6){
+    width: 20%;
+}
+
+.product__lists tr:nth-child(odd){
+    background-color: #ccc;
+}
+
+td a{
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    padding-inline: 8px;
+}
+
+td button{
+    border-style: none;
+    display: inline-block;
+    padding-inline: 8px;
+    margin-left: 16px;
+}
+
+/* .product__lists tr:nth-child(){
+    background-color: gray;
+} */
+
+/* 商品新規登録画面 */
+.form-label {
+    width: 150px;
+    align-items: center;
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.form-control {
+    height: 30px;
+}
+
+.form-select {
+    height: 30px;
+}
+
+.button__row{
+    margin-left: 20px;
+    display: flex;
+    margin-bottom: 20px;
+    gap: 100px;
+}
+
+/* 商品情報詳細画面 */
+.product__row--detail {
+    gap: 30px;
+}
+
+.button__row a{
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    padding: 8px 20px;
+}
+
+.button__row a:hover{
+    opacity: 0.7;
+}
+
+
+/* 商品情報編集画面 */
+.button__row button{
+    text-decoration: none;
+    color: #000;
+    display: inline-block;
+    padding: 8px 20px;
+}
+
+.button__row button:hover{
+    opacity: 0.7;
+}
