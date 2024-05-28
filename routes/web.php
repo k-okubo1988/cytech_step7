@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProductController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +17,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if(Auth::check()){
+        return redirect() -> route('products.index');
+    } else {
+        return redirect() -> route('login');
+    }
 });
+
+Auth::routes();
+
+Route::group(['middleware' => 'auth'],function(){
+    Route::resource('products', ProductController::class);
+});
+
 
 Auth::routes();
 
