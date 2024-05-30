@@ -25,6 +25,9 @@
             <div class="product__row product__row--edit">
                 <label for="product_name" class="form-label">商品名<span class="require text-danger">*</span></label>
                 <input type="text" id="product_name" name="product_name" class="form-control" value="{{ $product -> product_name }}" required>
+                @if($errors -> has('product_name'))
+                    <div class="alert alert-danger">{{ $errors -> first('product_name') }}</div>
+                @endif
             </div>
 
             <div class="product__row product__row--edit">
@@ -34,16 +37,25 @@
                     <option value="{{ $company -> id }}"{{ $product -> company_id == $company -> id ? 'selected' : ''}}>{{ $company -> company_name }}</option>
                     @endforeach
                 </select>
+                @if($errors -> has('company_id'))
+                    <div class="alert alert-danger">{{ $errors -> first('company_id') }}</div>
+                @endif
             </div>
 
             <div class="product__row product__row--edit">
                 <label for="price" class="form-label">価格<span class="require text-danger">*</span></label>
                 <input type="number" id="price" name="price" class="form-control" value="{{ $product -> price }}" required>
+                @if($errors -> has('price'))
+                    <div class="alert alert-danger">{{ $errors -> first('price') }}</div>
+                @endif
             </div>
 
             <div class="product__row product__row--edit">
                 <label for="stock" class="form-label">在庫数<span class="require text-danger">*</span></label>
                 <input type="number" id="stock" name="stock" class="form-control" value="{{ $product -> stock }}" required>
+                @if($errors -> has('stock'))
+                    <div class="alert alert-danger">{{ $errors -> first('stock') }}</div>
+                @endif
             </div>
 
             <div class="product__row product__row--edit">

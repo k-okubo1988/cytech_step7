@@ -7,6 +7,11 @@
 @section('content')
 <div class="container">
     <h2 class="product__title mb-5">商品一覧画面</h2>
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
     <div class="form__row">
         <form class="search__row" action="{{ route('products.index') }}" method="GET">
             <input type="text" name="keyword" placeholder="検索キーワード" value="{{$keyword??''}}">
@@ -39,7 +44,7 @@
                     <td>{{ $product -> product_name}}</td>
                     <td>¥{{ $product -> price }}</td>
                     <td>{{ $product -> stock }}</td>
-                    <td>{{ $product -> company_name }}</td>
+                    <td>{{ $product -> company -> company_name }}</td>
                     <td><a href="{{ route('products.show', $product) }}" class="btn--blue">詳細</a></td>
                     <td>
                         <form method="POST" action="{{ route('products.destroy', $product) }}">

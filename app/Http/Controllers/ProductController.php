@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Company;
+use App\Http\Requests\StoreProductRequest;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -53,32 +55,32 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request -> validate ([
-            'product_name' => 'required',
-            'company_id' => 'required',
-            'price' => 'required',
-            'stock' => 'required',
-            'comment' => 'nullable',
-            'img_path' => 'nullable|image',
-        ]);
-        
-        $product = new Product();
-        $product -> fill ($request -> all());
+        try{
+            DB::beginTransaction();
 
-        if( $request -> hasFile('img_path')){
-            $fileName = $request -> img_path -> getClientOriginalName();
-            $filePath = $request -> img_path -> storeAs('products', $fileName, 'public');
-            $product -> img_path = '/storage/' . $filePath;
-        }
+            $product = new Product();
+            $product -> fill ($request -> all());
+    
+            if( $request -> hasFile('img_path')){
+                $fileName = $request -> img_path -> getClientOriginalName();
+                $filePath = $request -> img_path -> storeAs('products', $fileName, 'public');
+                $product -> img_path = '/storage/' . $filePath;
+            }
 
-        if($product -> save()){
+            $product -> save();
+
+            DB::commit();
+
             return redirect() -> route('products.show', $product -> id)
                 -> with('success', 'データの新規登録が完了しました。');
-        } else {
+
+        } catch(\Exception $e) {
+            DB::rollback();
+
             return redirect() -> back()
-                -> with('error', 'エラーが発生しました。')
+                -> withErrors($validator)
                 -> withInput();
         }
     }
@@ -114,27 +116,25 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(StoreProductRequest $request, Product $product)
     {
-            $validatedDate = $request -> validate([
-                'product_name' => 'required',
-                'company_id' => 'required',
-                'price' => 'required',
-                'stock' => 'required',
-                'comment' => 'nullable',
-                'img_path' => 'nullable' | 'image',
-            ]);
-    
-            if( $request -> hasFile('img_path')){
-                $fileName = $request -> img_path -> getClientOriginalName();
-                $filePath = $request -> img_path -> storeAs('products', $fileName, 'public');
-                $product -> img_path = '/storage/' . $filePath;
-            }
-    
-            if($product -> update($validatedDate)){
+            try{
+                DB::beginTransaction();
+
+                if( $request -> hasFile('img_path')){
+                    $fileName = $request -> img_path -> getClientOriginalName();
+                    $filePath = $request -> img_path -> storeAs('products', $fileName, 'public');
+                    $product -> img_path = '/storage/' . $filePath;
+                }
+
+                $product -> update($validatedDate);
+
+                DB::commit();
+
                 return redirect() -> route('products.show', $product -> id)
                     ->with('success', 'データを更新しました。');
-            } else {
+
+            } catch(\Exception $e) {
                 return back()
                     ->with('error', 'エラーが起きました。')
                     -> withInput();
@@ -149,8 +149,20 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        $product -> delete();
+        try{
+            DB::beginTransaction();
 
-        return redirect('/products');
+            $product -> delete();
+
+            DB::commit();
+
+            return redirect('/products')
+                ->with('success', '商品を削除しました。');
+        } catch(\Exception $e) {
+            DB::rollback();
+
+            return back()
+                ->with('error', '商品の削除に失敗しました。');
+        }
     }
 }
