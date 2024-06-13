@@ -17,7 +17,7 @@ class ProductController extends Controller
      */
     public function index(request $request)
     {
-        $sort = $request -> input('sort', 'id');
+        $sort = $request -> input('sort', 'product_name');
         $direction = $request -> input ('direction', 'asc');
         $keyword = $request -> input('keyword');
         $selectedCompanyId = $request -> input('company_id');
@@ -47,46 +47,55 @@ class ProductController extends Controller
      */
     public function search( request $request )
     {
-        $query = Product::with('company');
+        $sort = Product::sortable() -> get();
+        // $input = $request -> all();
+        $keyword = $request -> input('keyword');
+        $selectedCompanyId = $request -> input('company_id');
+        $minPrice = $request -> input('min_price');
+        $maxPrice = $request -> input('max_price');
+        $minStock = $request -> input('min_stock');
+        $maxPrice = $request -> input('max_stock');
 
-        if ($request->has('keyword') && $request->keyword) {
-            $query->where('product_name', 'LIKE', '%' . $request->keyword . '%');
+        $productsQuery = Product::with('company');
+
+
+        if($keyword){
+            $productsQuery -> where('product_name', 'LIKE', '%' . $keyword . '%');
         }
 
-        if ($request->has('company_id') && $request->company_id) {
-            $query->whereHas('company', function ($q) use ($request) {
-                $q->where('id', $request->company_id);
+        if($selectedCompanyId){
+            $productsQuery -> whereHas('company',function($query)use($selectedCompanyId){
+                $query -> where('id', $selectedCompanyId);
             });
         }
 
-        if ($request->has('min_price') && $request->min_price) {
-            $query->where('price', '>=', $request->min_price);
+        if($minPrice){
+            $productsQuery -> where('price', '>=', $minPrice);
         }
-
-        if ($request->has('max_price') && $request->max_price) {
-            $query->where('price', '<=', $request->max_price);
+        if($maxPrice){
+            $productsQuery -> where('price', '<=', $maxPrice);
         }
-
-        if ($request->has('min_stock') && $request->min_stock) {
-            $query->where('stock', '>=', $request->min_stock);
+        if($minStock){
+            $productsQuery -> where('price', '>=', $minStock);
         }
-
-        if ($request->has('max_stock') && $request->max_stock) {
-            $query->where('stock', '<=', $request->max_stock);
+        if($maxStock){
+            $productsQuery -> where('price', '<=', $maxStock);
         }
+        
+        $products = $productsQuery ->with('company') -> paginate(5);
 
-        $products = $query->paginate(5);
         $companies = Company::all();
 
-        return response()->json([
-            'products' => $products->items(),
+        return response() -> json([
+            'products' => $products -> items(),
             'companies' => $companies,
-            'selectedCompanyId' => $request->company_id,
-            'keyword' => $request->keyword,
-            'minPrice' => $request->min_price,
-            'maxPrice' => $request->max_price,
-            'minStock' => $request->min_stock,
-            'maxStock' => $request->max_stock,
+            'selectedCompanyId' => $selectedCompanyId,
+            'keyword' => $keyword,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
+            'minStock' => $minStock,
+            'maxStock' => $maxStock,
+            'sort' => $sort,
         ]);
     }
 
