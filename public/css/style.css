@@ -34,6 +34,11 @@
     color: #fff;
 }
 
+td span{
+    padding-inline: 5px;
+    cursor: pointer;
+}
+
 /* 商品一覧画面 */
 .product__container--index{
     padding: 0;

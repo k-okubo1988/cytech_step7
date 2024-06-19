@@ -180,7 +180,7 @@ class ProductController extends Controller
                     $product -> img_path = '/storage/' . $filePath;
                 }
 
-                $product -> update($validatedDate);
+                $product -> fill($request -> validated()) -> save();
 
                 DB::commit();
 
