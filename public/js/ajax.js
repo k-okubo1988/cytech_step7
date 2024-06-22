@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .done(function(data){
             console.log(data);
-            let html;
+            let html = '';
             
             $.each(data.products,function(index, product){
                 html += `
@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // $(".product__lists tbody").append(html);
             productListsBody.innerHTML += html;
 
-            let deleteButton = productListBody.querySelectorAll('.btn--red');
-            deleteButton.forEach(function(button){
+            let deleteButtons = productListsBody.querySelectorAll('.btn--red');
+            deleteButtons.forEach(function(button){
                 button.addEventListener('click', handleDeleteClick);
             });
         })
@@ -74,24 +74,28 @@ function handleDeleteClick(event){
 
     if(confirm('この商品を削除してよろしいですか？')) {
         // 削除対象の製品 ID を取得
-        let $row = this.closest('tr');
+        let $row = event.currentTarget.closest('tr');
         let productId = $row.dataset.productId;
         
         
         // Ajax 通信で削除処理を行う
         $.ajax({
             url:"products/" + productId,
-            type: 'DELETE',
-            success: function(response) {
-                // 削除成功時の処理
-                console.log('削除成功:', response);
-                // 削除した行を表から削除する
-                $row.remove();
-            },
-            error: function(xhr, status, error) {
-                // 削除失敗時の処理
-                console.error('削除失敗:', error);
+            type: 'POST',
+            data: {
+                "_method": "DELETE",
+                "_token": $('meta[name="csrf-token"]').attr('content')
             }
+        })
+        .done(function(response) {
+            // 削除成功時の処理
+            console.log('削除成功:', response);
+            // 削除した行を表から削除する
+            $row.remove();
+        })
+        .fail(function(xhr, status, error) {
+            // 削除失敗時の処理
+            console.error('削除失敗:', error);
         });
     }
 }
