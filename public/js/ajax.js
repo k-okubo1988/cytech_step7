@@ -4,11 +4,21 @@ $.ajaxSetup({
     }
 });
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const productListsBody = document.querySelector('.product__lists tbody');
-
+    
     $("#search__btn").click(function(event){
         event.preventDefault();
+        $(document).ready(function(){
+            $('#sort_table').tablesorter({
+                headers: {
+                    0: { sorter: 'digit' },
+                    3: { sorter: 'digit' },
+                    4: { sorter: 'digit' },
+                }
+            });
+        });
         
         let keyword = $('#keyword').val();
         let selectedCompanyId = $('#company_id').find('option:selected').val();
@@ -58,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // $(".product__lists tbody").append(html);
             productListsBody.innerHTML += html;
 
+            $('#sort_table').trigger('update').trigger('sorton',[['0','asc']]);
+
             let deleteButtons = productListsBody.querySelectorAll('.btn--red');
             deleteButtons.forEach(function(button){
                 button.addEventListener('click', handleDeleteClick);
@@ -99,3 +111,5 @@ function handleDeleteClick(event){
         });
     }
 }
+
+

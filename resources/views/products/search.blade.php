@@ -36,47 +36,37 @@
     <div class="product__container product__container--index">
         <table class="product__lists" id="sort_table">
             <thead>
-                <th>
-                    ID
+                <th>ID
+                    <!-- <a href="{{ route('products.search', ['keyword' => $keyword, 'company_id' => $selectedCompanyId, 'sortField' => 'id', 'sortDirection' => $sortField == 'id' && $sortDirection == 'asc' ? 'desc' : 'asc']) }}">
+                        ID
+                    </a> -->
                 </th>
                 <th>商品画像</th>
-                <th>
+                <th>商品名
+                <!-- <a href="{{ route('products.search', ['keyword' => $keyword, 'company_id' => $selectedCompanyId, 'sortField' => 'product_name', 'sortDirection' => $sortField == 'product_name' && $sortDirection == 'asc' ? 'desc' : 'asc']) }}">
                     商品名
+                </a> -->
                 </th>
-                <th>
-                    価格
+                <th>価格
+                    <!-- <a href="{{ route('products.search', ['keyword' => $keyword, 'company_id' => $selectedCompanyId, 'sortField' => 'price', 'sortDirection' => $sortField == 'price' && $sortDirection == 'asc' ? 'desc' : 'asc']) }}">
+                        価格
+                    </a> -->
                 </th>
-                <th>
-                    在庫数
+                <th>在庫数
+                    <!-- <a href="{{ route('products.search', ['keyword' => $keyword, 'company_id' => $selectedCompanyId, 'sortField' => 'stock', 'sortDirection' => $sortField == 'stock' && $sortDirection == 'asc' ? 'desc' : 'asc']) }}">
+                        在庫数
+                    </a> -->
                 </th>
                 <th>メーカー名</th>
                 <th colspan="2"><a href="{{ route('products.create', $products) }}" class="btn--orange">新規登録</a></th>
             </thead>
             <tbody>
-                <!-- 繰り返し処理 -->
-                @foreach($products as $product)
-                <tr>
-                    <td>{{ $product -> id }}.</td>
-                    <td><img src="{{ asset( $product -> img_path) }}" alt="商品画像"></td>
-                    <td>{{ $product -> product_name}}</td>
-                    <td>¥{{ $product -> price }}</td>
-                    <td>{{ $product -> stock }}</td>
-                    <td>{{ $product -> company -> company_name }}</td>
-                    <td><a href="{{ route('products.show', $product) }}" class="btn--blue">詳細</a></td>
-                    <td>
-                        <form method="POST" action="{{ route('products.destroy', $product) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn--red">削除</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
+               
             </tbody>
         </table>
     </div>
 
-    {{ $products ->  links() }}
+    {{ $products -> appends(['keyword' => $keyword, 'selectedCompanyId' => $selectedCompanyId ]) -> links() }}
 
 </div>
 @endsection

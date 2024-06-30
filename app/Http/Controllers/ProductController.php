@@ -17,27 +17,18 @@ class ProductController extends Controller
      */
     public function index(request $request)
     {
-        $sort = $request -> input('sort', 'id');
-        $direction = $request -> input ('direction', 'asc');
+        $sortField = $request->input('sortField', 'id');
+        $sortDirection = $request->input('sortDirection', 'asc');
         $keyword = $request -> input('keyword');
-        $selectedCompanyId = $request -> input('company_id');
+        // $selectedCompanyId = $request -> input('company_id');
 
-        $productsQuery = Product::with('company')
-                -> sortable([$sort => $direction]);
-
-
-        if( $keyword ){
-            $productsQuery->where('product_name', 'LIKE', '%' . $keyword . '%');
-        }
-        if( $selectedCompanyId ){
-            $productsQuery -> where('company_id', $selectedCompanyId);
-        }
-        
-        $products = $productsQuery -> paginate(5);
+        $products = Product::with('company')
+            ->orderBy($sortField, $sortDirection)
+            ->paginate(5);
 
         $companies = Company::all();
 
-        return view('products.index', compact('products', 'companies','selectedCompanyId', 'keyword', 'sort'));
+        return view('products.index', compact('products', 'companies', 'sortField', 'sortDirection'));
     }
 
     /**
@@ -47,6 +38,15 @@ class ProductController extends Controller
      */
     public function search( request $request )
     {
+        $sortField = $request->input('sortField', 'id');
+        $sortDirection = $request->input('sortDirection', 'asc');
+        $keyword = $request->input('keyword');
+        $selectedCompanyId = $request->input('company_id');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
+        $minStock = $request->input('min_stock');
+        $maxStock = $request->input('max_stock');
+
         $query = Product::with('company');
 
         if ($request->has('keyword') && $request->keyword) {
@@ -75,7 +75,7 @@ class ProductController extends Controller
             $query->where('stock', '<=', $request->max_stock);
         }
 
-        $products = $query->paginate(5);
+        $products = $query->orderBy($sortField, $sortDirection)->paginate(5);
         $companies = Company::all();
 
         return response()->json([
@@ -87,6 +87,8 @@ class ProductController extends Controller
             'maxPrice' => $request->max_price,
             'minStock' => $request->min_stock,
             'maxStock' => $request->max_stock,
+            'sortField' => $sortField,
+            'sortDirection' => $sortDirection,
         ]);
     }
 
